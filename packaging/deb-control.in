@@ -1,0 +1,20 @@
+Package: lse
+Version: @VERSION@
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: lse project <lse@localhost>
+Depends: libgtk-4-1 (>= 4.12), libadwaita-1-0 (>= 1.4), libsqlite3-0
+Recommends: xdg-desktop-portal | xdg-desktop-portal-kde | xdg-desktop-portal-gnome
+Installed-Size: 16384
+Description: Everything-style instant file search for the Linux desktop
+ lse indexes your filesystem in parallel (SQLite + in-memory lookup),
+ then answers queries from the index only - never walking the disk at
+ query time - typically in well under 100ms over more than a million files.
+ .
+ Features: incremental updates via inotify with watch-budget fallback,
+ realtime filtering as you type, multi-word AND search, column sorting
+ with ascending/descending/unsorted cycling, global hotkey via
+ xdg-desktop-portal GlobalShortcuts (no hardcoded XGrabKey), tray applet
+ (StatusNotifierItem), D-Bus daemon with CLI client, and open-frequency
+ aware ranking.

@@ -1,0 +1,69 @@
+Name:           lse
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        Everything-style instant file search for the Linux desktop
+
+License:        MIT
+URL:            https://example.invalid/lse
+Source0:        lse-%{version}-src.tar.gz
+
+BuildRequires:  cargo
+BuildRequires:  rust
+BuildRequires:  gcc
+BuildRequires:  make
+BuildRequires:  pkgconfig(gtk4)
+BuildRequires:  pkgconfig(libadwaita-1)
+BuildRequires:  blueprint-compiler
+BuildRequires:  systemd-rpm-macros
+
+Requires:       gtk4
+Requires:       libadwaita
+Recommends:     xdg-desktop-portal
+
+%description
+lse indexes your filesystem in parallel (SQLite + in-memory lookup),
+then answers queries from the index only - never walking the disk at
+query time - typically in well under 100ms over more than a million files.
+
+Features: incremental updates via inotify with watch-budget fallback,
+realtime filtering as you type, multi-word AND search, column sorting
+with ascending/descending/unsorted cycling, global hotkey via
+xdg-desktop-portal GlobalShortcuts (no hardcoded XGrabKey), tray applet
+(StatusNotifierItem), D-Bus daemon with CLI client, and open-frequency
+aware ranking.
+
+%prep
+%autosetup -n lse-%{version}
+
+%build
+# 依赖从 crates.io 拉取，缓存目录可由外部环境（CARGO_HOME）重定向
+export CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
+cargo build --release --locked -j 6
+
+%install
+TDIR="${CARGO_TARGET_DIR:-target}"
+install -Dm755 "$TDIR/release/lse"        %{buildroot}%{_bindir}/lse
+install -Dm755 "$TDIR/release/lse-gui"    %{buildroot}%{_bindir}/lse-gui
+install -Dm755 "$TDIR/release/lse-daemon" %{buildroot}%{_bindir}/lse-daemon
+install -Dm644 packaging/lse-daemon.service \
+    %{buildroot}%{_userunitdir}/lse-daemon.service
+install -Dm644 packaging/org.lse.Search.desktop \
+    %{buildroot}%{_datadir}/applications/org.lse.Search.desktop
+install -Dm644 packaging/lse-search.svg \
+    %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/lse-search.svg
+install -Dm644 packaging/lse-search-symbolic.svg \
+    %{buildroot}%{_datadir}/icons/hicolor/scalable/symbolic/lse-search-symbolic.svg
+
+%files
+%doc README.md CHANGELOG.md
+%{_bindir}/lse
+%{_bindir}/lse-gui
+%{_bindir}/lse-daemon
+%{_userunitdir}/lse-daemon.service
+%{_datadir}/applications/org.lse.Search.desktop
+%{_datadir}/icons/hicolor/scalable/apps/lse-search.svg
+%{_datadir}/icons/hicolor/scalable/symbolic/lse-search-symbolic.svg
+
+%changelog
+* Wed Nov 11 2026 lse contributors <lse@localhost> - @VERSION@-1
+- Initial RPM build from lse-@VERSION@ source tarball

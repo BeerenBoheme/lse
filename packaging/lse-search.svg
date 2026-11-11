@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- 背景圆形 - 深蓝色 -->
+  <circle cx="64" cy="64" r="58" fill="#2C3E50"/>
+  
+  <!-- 文件形状 - 纯白色 -->
+  <path d="M35 30 L68 30 L85 47 L85 94 L35 94 Z" fill="#FFFFFF"/>
+  <path d="M68 30 L68 47 L85 47" fill="#ECF0F1"/>
+  
+  <!-- 文件线条 - 深灰色，与背景区分 -->
+  <rect x="44" y="42" width="34" height="5" rx="2.5" fill="#34495E"/>
+  <rect x="44" y="54" width="34" height="5" rx="2.5" fill="#34495E"/>
+  <rect x="44" y="66" width="26" height="5" rx="2.5" fill="#34495E"/>
+  <rect x="44" y="78" width="20" height="5" rx="2.5" fill="#34495E"/>
+  
+  <!-- 放大镜 - 镜片 - 亮橙色，醒目对比 -->
+  <circle cx="80" cy="80" r="24" fill="none" stroke="#E67E22" stroke-width="7"/>
+  
+  <!-- 放大镜 - 手柄 - 亮橙色 -->
+  <line x1="97" y1="97" x2="112" y2="112" stroke="#E67E22" stroke-width="7" stroke-linecap="round"/>
+  
+  <!-- 镜片内部高光 -->
+  <circle cx="72" cy="72" r="5" fill="#E67E22" opacity="0.2"/>
+</svg>

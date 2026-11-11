@@ -1,0 +1,19 @@
+#!/bin/sh
+# lse deb postinst：只做提示（user service 由用户自行启用，
+# postinst 以 root 跑在打包环境，无法替最终用户 systemctl --user）
+set -e
+
+cat <<'EOF'
+lse 已安装。
+
+启动图形界面:        lse-gui   （或应用菜单搜索 "lse"）
+启用常驻索引服务:    systemctl --user enable --now lse-daemon
+命令行搜索:          lse 关键词
+查看状态:            lse --status
+重建索引:            lse --update
+
+全局快捷键 Super+Space 首次使用时会经桌面门户弹出授权框（KDE/GNOME 均走
+xdg-desktop-portal，不硬编码按键抓取）。
+EOF
+
+exit 0

@@ -1,0 +1,17 @@
+[package]
+name = "lse-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "lse command line interface (Linux Search Everything)"
+
+[[bin]]
+name = "lse"
+path = "src/main.rs"
+
+[dependencies]
+lse-core = { path = "../lse-core" }
+zbus = { workspace = true }
+futures-lite = { workspace = true }
+rusqlite = { workspace = true }
+libc = { workspace = true }

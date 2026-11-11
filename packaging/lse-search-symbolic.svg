@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- lse symbolic 图标：放大镜（单色，桌面主题自动着色，符合 symbolic 规范） -->
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <!-- 镜环（evenodd 挖空） -->
+  <path fill="#000000" fill-rule="evenodd"
+        d="M6.5 1a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zm0 1.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/>
+  <!-- 手柄（45° 斜带，接镜环右下） -->
+  <path fill="#000000" d="M10.2 11.0 11.0 10.2 14.8 14.0 14.0 14.8z"/>
+</svg>

@@ -1,0 +1,10 @@
+/target
+/.toolchain
+/.xdg
+/.bench
+*.db
+*.db-wal
+*.db-shm
+/build
+/dist
+lse-*.tar.gz

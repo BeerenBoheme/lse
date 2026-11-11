@@ -1,0 +1,103 @@
+// lse 搜索窗口（声明式 UI；业务逻辑全部在 src/ 中，不写入此文件）
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ApplicationWindow win {
+    title: "lse 文件搜索";
+    default-width: 780;
+    default-height: 540;
+
+    content: Adw.ToastOverlay toast_overlay {
+        // 纵向 GtkBox 直接承载标题栏+内容（不用 Adw.ToolbarView：
+        // 其 GtkBuilder child type 在本机 libadwaita 1.9.1 下被拒绝，
+        // 子控件脱挂导致全窗口 0 尺寸黑屏——已实测 Gtk-WARNING 确认）
+        Gtk.Box root_box {
+            orientation: vertical;
+            hexpand: true;
+            vexpand: true;
+
+            // 标题栏：start=最小化 / end=最大化+关闭（Adw 拆成两个属性），
+            // CSD 按钮跟随主题样式（用户要求"实用优先"）
+            Adw.HeaderBar header_bar {
+                show-start-title-buttons: true;
+                show-end-title-buttons: true;
+            }
+
+            Gtk.Box content_box {
+            orientation: vertical;
+            spacing: 0;
+            margin-top: 8;
+            margin-bottom: 8;
+            margin-start: 8;
+            margin-end: 8;
+
+            Gtk.SearchEntry search_entry {
+                placeholder-text: "输入关键字即时搜索…";
+                hexpand: true;
+            }
+
+            Gtk.Separator {
+                margin-top: 6;
+                margin-bottom: 2;
+            }
+
+            Gtk.ScrolledWindow results_scroll {
+                vexpand: true;
+                hscrollbar-policy: never;
+
+                Gtk.ColumnView column_view {
+                    hexpand: true;
+                    vexpand: true;
+                }
+            }
+
+            Gtk.Box progress_box {
+                orientation: vertical;
+                spacing: 4;
+                visible: false;
+                margin-top: 6;
+                margin-bottom: 2;
+
+                Gtk.ProgressBar progress_bar {
+                    show-text: false;
+                }
+
+                Gtk.Label progress_label {
+                    xalign: 0.0;
+                    css-classes: ["dim-label"];
+                }
+            }
+
+            Gtk.Separator {
+                margin-top: 4;
+            }
+
+            Gtk.Box {
+                orientation: horizontal;
+                spacing: 8;
+                margin-top: 4;
+
+                Gtk.Image backend_icon {
+                    icon-name: "emblem-ok-symbolic";
+                }
+
+                Gtk.Label status_label {
+                    xalign: 0.0;
+                    hexpand: true;
+                    ellipsize: end;
+                    css-classes: ["dim-label"];
+                    label: "正在连接后端…";
+                }
+
+                Gtk.Button rebuild_button {
+                    label: "重建索引";
+                    icon-name: "view-refresh-symbolic";
+                    css-classes: ["flat"];
+                    tooltip-text: "手动重建全盘索引";
+                    visible: false;
+                }
+            }
+        }
+    }
+    };
+}

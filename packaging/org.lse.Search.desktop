@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=lse 文件搜索
+GenericName=File Search
+Comment=Everything-style instant file search（本地即时文件搜索）
+Exec=lse-gui
+Icon=lse-search
+Terminal=false
+Categories=Utility;FileTools;FileManager;
+Keywords=search;find;file;everything;instant;搜索;文件;
+StartupNotify=true
+DBusActivatable=false
+X-GNOME-UsesNotifications=false

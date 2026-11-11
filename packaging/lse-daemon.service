@@ -1,0 +1,17 @@
+[Unit]
+Description=lse instant file search index daemon
+Documentation=man:lse(1) file:///usr/share/doc/lse/README.md
+# 用户级常驻索引服务：索引查询只走内存+SQLite，不扫盘
+
+[Service]
+Type=simple
+# 绝对路径指向系统安装位置；开发用 make install 时 Makefile 会改写为 /usr/local/bin
+ExecStart=/usr/bin/lse-daemon
+Nice=10
+# 退出时 daemon 自身负责索引落盘（SIGTERM 处理）；崩溃自动拉起
+Restart=on-failure
+RestartSec=3
+# 内存预算（验收 daemon ≤200MB）由程序内部索引结构保证，无需限制 MemoryMax
+
+[Install]
+WantedBy=default.target

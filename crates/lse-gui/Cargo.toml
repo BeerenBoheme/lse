@@ -1,0 +1,21 @@
+[package]
+name = "lse-gui"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "lse GUI (GTK4 + libadwaita) — pure D-Bus client, never touches the filesystem index"
+
+[[bin]]
+name = "lse-gui"
+path = "src/main.rs"
+
+[dependencies]
+lse-core = { path = "../lse-core" }
+gtk = { package = "gtk4", version = "0.11" }
+libadwaita = { workspace = true }
+zbus = { workspace = true }
+futures-lite = { workspace = true }
+serde = { workspace = true }
+libc = { workspace = true }
+
+[build-dependencies]

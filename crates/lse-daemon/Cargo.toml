@@ -1,0 +1,15 @@
+[package]
+name = "lse-daemon"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "lse background indexing daemon (D-Bus service)"
+
+[dependencies]
+lse-core = { path = "../lse-core" }
+zbus = { workspace = true }
+futures-lite = { workspace = true }
+rusqlite = { workspace = true }
+serde = { workspace = true }
+regex = { workspace = true }
+libc = { workspace = true }
