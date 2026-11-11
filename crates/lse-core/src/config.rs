@@ -53,7 +53,8 @@ pub struct Config {
     pub query_limit: usize,
     /// 全局快捷键（GUI 使用，如 "Super+Space"）
     pub hotkey: String,
-    /// 搜索窗失焦即隐藏
+    /// 【已废弃】搜索窗失焦即隐藏。0.1.5 起该功能整体移除、此键不再有任何效果；
+    /// 字段仅为兼容旧 config.toml（结构体开了 deny_unknown_fields）而保留。
     pub hide_on_focus_loss: bool,
     /// inotify 监听优先级（预算不足时按此顺序保证）
     pub watch_priority: Vec<String>,

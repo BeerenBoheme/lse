@@ -903,7 +903,7 @@ checksum = "5d15f86d12da44cd8d4ec3c73984537eb7f4cadcb9776a575a0a8a05ca11005c"
 
 [[package]]
 name = "lse-bench"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "lse-core",
  "rusqlite",
@@ -911,7 +911,7 @@ dependencies = [
 
 [[package]]
 name = "lse-cli"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "futures-lite",
  "libc",
@@ -922,7 +922,7 @@ dependencies = [
 
 [[package]]
 name = "lse-core"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "libc",
  "notify",
@@ -935,7 +935,7 @@ dependencies = [
 
 [[package]]
 name = "lse-daemon"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "futures-lite",
  "libc",
@@ -948,7 +948,7 @@ dependencies = [
 
 [[package]]
 name = "lse-gui"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "futures-lite",
  "gtk4",

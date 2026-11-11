@@ -1,6 +1,6 @@
 //! 搜索窗：实时过滤（每字符一次后端查询、无中间态）、三列结果列表
 //! （名称/完整路径/修改时间，可点列头排序）、双击或回车打开、右键菜单、
-//! 拖拽导出、失焦隐藏、索引状态栏与首次建索引进度。
+//! 拖拽导出、索引状态栏与首次建索引进度。
 //!
 //! 本进程是纯 D-Bus 客户端：不持有索引、不遍历文件系统。
 
@@ -32,10 +32,6 @@ pub struct Win {
     store: gio::ListStore,
     ctx: Rc<RefCell<Ctx>>,
     search_gen: Rc<Cell<u64>>,
-    hide_gen: Rc<Cell<u32>>,
-    /// 唤起宽限（毫秒单调时钟）：present 后 1s 内合成器还没把焦点给到窗口时不许
-    /// 失焦隐藏——否则快捷键唤起的窗口"闪一下就没了"，用户观感=唤起未发生
-    hide_grace_ms: Rc<Cell<i64>>,
     connected: Rc<Cell<bool>>,
     building: Rc<Cell<bool>>,
     err: Rc<RefCell<String>>,
@@ -44,7 +40,6 @@ pub struct Win {
     last_query: Rc<RefCell<String>>,
     /// 上次状态栏文本（变化才 set_text，避免无效重绘）
     last_status: Rc<RefCell<String>>,
-    hide_on_focus_loss: bool,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -58,7 +53,6 @@ impl Win {
     pub fn new(
         app: &impl gtk::prelude::IsA<gtk::Application>,
         backend: ipc::Backend,
-        hide_on_focus_loss: bool,
     ) -> Rc<Win> {
         let builder = gtk::Builder::from_string(UI);
         let window: adw::ApplicationWindow = builder.object("win").expect("blp: #win");
@@ -215,14 +209,11 @@ impl Win {
             store,
             ctx,
             search_gen: Rc::new(Cell::new(0)),
-            hide_gen: Rc::new(Cell::new(0)),
-            hide_grace_ms: Rc::new(Cell::new(0)),
             connected: Rc::new(Cell::new(false)),
             building: Rc::new(Cell::new(false)),
             err: Rc::new(RefCell::new(String::new())),
             last_query: Rc::new(RefCell::new(String::new())),
             last_status: Rc::new(RefCell::new(String::new())),
-            hide_on_focus_loss,
         });
         win.wire();
         win
@@ -290,20 +281,6 @@ impl Win {
                     }
                 }
             });
-        }
-
-        // ---- 失焦隐藏（可配置；300ms 延迟避免右键菜单/瞬时失焦误伤）
-        {
-            let sl = Rc::clone(&sl);
-            self.window
-                .connect_notify_local(Some("is-active"), move |win, _| {
-                    let g = sl.hide_gen.get() + 1;
-                    sl.hide_gen.set(g);
-                    if win.is_active() {
-                        return;
-                    }
-                    Self::arm_hide_check(Rc::clone(&sl), g, 300);
-                });
         }
 
         // ---- 点 X = 隐藏到后台（托盘/快捷键可再次唤起；真正退出走托盘菜单）
@@ -626,27 +603,7 @@ impl Win {
 
     // ------------------------------------------------------------ 打开
 
-    /// 失焦隐藏检查（generation 校验防误伤）；处于唤起宽限期内时延后重查——
-    /// Wayland 下 present 后合成器可能晚几百毫秒才给焦点，不能提前隐藏。
-    fn arm_hide_check(sl: Rc<Win>, g: u32, delay_ms: u64) {
-        glib::timeout_add_local_once(Duration::from_millis(delay_ms), move || {
-            if !sl.hide_on_focus_loss || sl.hide_gen.get() != g || sl.window.is_active() {
-                return;
-            }
-            let now_ms = glib::monotonic_time() / 1_000_000;
-            if now_ms < sl.hide_grace_ms.get() {
-                Self::arm_hide_check(sl.clone(), g, 150);
-                return;
-            }
-            eprintln!("[lse-dbg] hide (focus loss)");
-            sl.window.hide();
-        });
-    }
-
     pub fn present_clean(self: &Rc<Self>) {
-        // 唤起宽限：1s 内不因失焦隐藏（防"闪一下就没了"）
-        self.hide_grace_ms
-            .set(glib::monotonic_time() / 1_000_000 + 1_000);
         let entry: gtk::SearchEntry = self.builder.object("search_entry").expect("blp");
         entry.set_text("");
         self.window.present();

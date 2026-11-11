@@ -3,7 +3,7 @@
 //! 架构约束（硬性）：GUI 是纯 D-Bus 客户端——不持有索引、不做文件系统遍历。
 //! - 单实例（application_id）：第二次启动 `lse-gui`/`lse --show` 会唤起已有窗口；
 //! - 托盘与全局快捷键的回调来自各自线程，通过 50ms 主循环轮询通道回到 GTK 线程；
-//! - 窗口失焦隐藏（可配置），点 X 也仅隐藏；真正退出走托盘菜单。
+//! - 点 X 仅隐藏到托盘；真正退出走托盘菜单。
 
 mod file_item;
 mod ipc;
@@ -122,7 +122,6 @@ fn main() {
     }
 
     // ---------------- 应用激活：建窗或唤起已有窗
-    let hide_on_focus_loss = cfg.hide_on_focus_loss;
     app.connect_activate(move |app| {
         eprintln!("[lse-dbg] activate entered");
         let mut cell = win_cell.borrow_mut();
@@ -140,7 +139,7 @@ fn main() {
             }
         };
         eprintln!("[lse-dbg] backend connected, building window...");
-        let win = window::Win::new(app, backend, hide_on_focus_loss);
+        let win = window::Win::new(app, backend);
         eprintln!("[lse-dbg] window built");
         win.present_clean();
         eprintln!("[lse-dbg] window presented");
